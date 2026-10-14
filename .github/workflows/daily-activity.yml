@@ -1,0 +1,62 @@
+name: Daily Activity Auto-Push
+
+on:
+  schedule:
+    # Har kuni Toshkent vaqti bilan soat 23:30 da (UTC 18:30)
+    - cron: '30 18 * * *'
+  workflow_dispatch: # Istalgan paytda GitHub interfeysidan "Run workflow" orqali sinab ko'rish
+
+permissions:
+  contents: write
+
+jobs:
+  check-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repozitoriyani yuklab olish
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Node.js muhitini tayyorlash
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Bugungi push faolligini tekshirish
+        id: check_activity
+        run: |
+          set +e
+          node scripts/check-daily-activity.cjs
+          STATUS=$?
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+          exit 0
+
+      - name: Agar push qilinmagan bo'lsa, commit va push qilish
+        if: steps.check_activity.outputs.status == '10'
+        run: |
+          git config --global user.name "Komila Zokirova"
+          git config --global user.email "zokirovakomila500@gmail.com"
+          
+          TODAY=$(TZ="Asia/Tashkent" date +'%Y-%m-%d')
+          TIME=$(TZ="Asia/Tashkent" date +'%H:%M')
+          
+          if [ ! -f ACTIVITY.md ]; then
+            echo "# 📈 Kunlik Faollik Jurnali (Daily Activity Log)" > ACTIVITY.md
+            echo "" >> ACTIVITY.md
+            echo "| Sana | Vaqt (Toshkent) | Holat | Izoh |" >> ACTIVITY.md
+            echo "| :--- | :--- | :--- | :--- |" >> ACTIVITY.md
+          fi
+          
+          echo "| $TODAY | $TIME | Avtomatik | Kunlik faollik saqlandi |" >> ACTIVITY.md
+          
+          git add ACTIVITY.md
+          git commit -m "chore(activity): daily log update for $TODAY [skip ci]"
+          git push origin main
+          echo "✅ Muvaffaqiyatli commit va push qilindi!"
+
+      - name: Agar allaqachon push qilingan bo'lsa
+        if: steps.check_activity.outputs.status == '0'
+        run: |
+          echo "🎉 Komila bugun allaqachon o'zi kod push qilgan! Yangi commit kerak emas."
