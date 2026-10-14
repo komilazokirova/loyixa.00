@@ -1,0 +1,202 @@
+[
+  {
+    "id": "t-01",
+    "type": "theory",
+    "title": "JavaScript Event Loop, Microtasks va Macrotasks",
+    "category": "JavaScript Core",
+    "folder": "konspektlar",
+    "filename": "01-javascript-event-loop.md",
+    "commitMessage": "docs(konspekt): add JavaScript Event Loop, microtasks and macrotasks deep dive",
+    "content": "# 🔄 JavaScript Event Loop: Microtasks va Macrotasks\n\nJavaScript — **bir oqimli (single-threaded)** dasturlash tili bo'lib, bir vaqtning o'zida faqat bitta operatsiyani bajara oladi. Biroq u qanday qilib asinxron (non-blocking) ishlaydi? Bu **Event Loop** mexanizmi orqali amalga oshiriladi.\n\n---\n\n## 🧱 Asosiy komponentlar:\n\n1. **Call Stack (Chaqiruvlar steki)**:\n   * Hozirda bajarilayotgan funksiyalar steki (LIFO — Last In, First Out).\n2. **Web APIs (Brauzer muhiti)**:\n   * `setTimeout`, `fetch`, DOM hodisalari kabi brauzer taqdim etadigan asinxron imkoniyatlar.\n3. **Microtask Queue (Mikrotopshiriqlar navbati)**:\n   * `Promise.then/catch/finally`, `queueMicrotask`, `async/await` natijalari.\n4. **Macrotask / Task Queue (Makrotopshiriqlar navbati)**:\n   * `setTimeout`, `setInterval`, `setImmediate`, I/O amallari.\n\n---\n\n## ⚡ Ishlash ketma-ketligi (Prioritet qoidasi):\n\n1. Call Stack'dagi barcha sinxron kodlar to'liq bajariladi.\n2. Call Stack bo'shashi bilan, Event Loop **Microtask Queue**dagi barcha vazifalarni navbati bilan chaqiradi va bajaradi.\n3. Microtasklar tugagach, **bitta** Macrotask olinadi va bajariladi.\n4. Tsikl qaytadan takrorlanadi.\n\n> 💡 **Qoida**: Microtasklar har doim Macrotasklardan oldin bajariladi!\n"
+  },
+  {
+    "id": "p-01",
+    "type": "practical",
+    "title": "Array Transformation Utilities (groupBy, chunk, uniqueBy)",
+    "category": "TypeScript Utilities",
+    "folder": "amaliyot",
+    "filename": "01-array-transformation-utils.ts",
+    "commitMessage": "feat(amaliyot): add array transformation utility functions (groupBy, chunk, uniqueBy)",
+    "content": "/**\n * Array Transformation Utilities\n * Frontend loyihalarda eng ko'p ishlatiladigan massiv yordamchi funksiyalari\n */\n\n// 1. groupBy: Elementlarni berilgan kalit bo'yicha guruhlash\nexport function groupBy<T, K extends string | number | symbol>(\n  array: T[],\n  keySelector: (item: T) => K\n): Record<K, T[]> {\n  return array.reduce((accumulator, currentItem) => {\n    const key = keySelector(currentItem);\n    if (!accumulator[key]) {\n      accumulator[key] = [];\n    }\n    accumulator[key].push(currentItem);\n    return accumulator;\n  }, {} as Record<K, T[]>);\n}\n\n// 2. chunk: Massivni belgilangan o'lchamdagi bo'laklarga ajratish\nexport function chunk<T>(array: T[], size: number): T[][] {\n  if (size <= 0) throw new Error('Size noldan katta bo\\'lishi kerak');\n  const chunks: T[][] = [];\n  for (let i = 0; i < array.length; i += size) {\n    chunks.push(array.slice(i, i + size));\n  }\n  return chunks;\n}\n\n// 3. uniqueBy: Obyektlar massividan kalit bo'yicha unikal elementlarni saralab olish\nexport function uniqueBy<T, K>(array: T[], keySelector: (item: T) => K): T[] {\n  const seen = new Set<K>();\n  return array.filter(item => {\n    const key = keySelector(item);\n    if (seen.has(key)) {\n      return false;\n    }\n    seen.add(key);\n    return true;\n  });\n}\n\n// Namuna sinovlari:\nconst users = [\n  { id: 1, name: 'Komila', role: 'developer' },\n  { id: 2, name: 'Anvar', role: 'designer' },\n  { id: 3, name: 'Malika', role: 'developer' },\n];\n\nconsole.log('Guruhlash:', groupBy(users, u => u.role));\nconsole.log('Bo\\'laklash:', chunk([1, 2, 3, 4, 5, 6, 7], 3));\n"
+  },
+  {
+    "id": "t-02",
+    "type": "theory",
+    "title": "React useEffect Lifecycle va Cleanup Funksiyalari",
+    "category": "React Core",
+    "folder": "konspektlar",
+    "filename": "02-react-use-effect-lifecycle.md",
+    "commitMessage": "docs(konspekt): add React useEffect lifecycle mapping and cleanup guide",
+    "content": "# ⚛️ React `useEffect` Hook va Cleanup mexanizmi\n\nReact funksional komponentlarida yon ta'sirlarni (side-effects: API chaqiruvlari, obuna bo'lish, DOM manipulyatsiyasi) boshqarish uchun `useEffect` ishlatiladi.\n\n---\n\n## 📌 Bog'liqliklar massivi (Dependency Array) qoidalari:\n\n1. **Massiv berilmasa**:\n   ```tsx\n   useEffect(() => {\n     // Har bir render bo'lganda ishlaydi\n   });\n   ```\n\n2. **Bo'sh massiv (`[]`)**:\n   ```tsx\n   useEffect(() => {\n     // Faqat komponent ilk bor ekranga chizilganda (Mount) 1 marta ishlaydi\n   }, []);\n   ```\n\n3. **Qiymatlar berilgan massiv (`[userId, count]`)**:\n   ```tsx\n   useEffect(() => {\n     // userId yoki count o'zgarganda ishlaydi\n   }, [userId, count]);\n   ```\n\n---\n\n## 🧹 Cleanup (Tozalash) funksiyasi nega kerak?\n\nKomponent DOM'dan o'chirilganda (Unmount) yoki useEffect qayta ishga tushishidan oldin xotira oqishini (memory leak) oldini olish uchun cleanup qaytariladi:\n\n```tsx\nuseEffect(() => {\n  const handleResize = () => console.log(window.innerWidth);\n  window.addEventListener('resize', handleResize);\n\n  // Cleanup:\n  return () => {\n    window.removeEventListener('resize', handleResize);\n  };\n}, []);\n```\n"
+  },
+  {
+    "id": "p-02",
+    "type": "practical",
+    "title": "Custom Debounce and Throttle Implementation",
+    "category": "JavaScript Performance",
+    "folder": "amaliyot",
+    "filename": "02-custom-debounce-throttle.ts",
+    "commitMessage": "feat(amaliyot): implement custom debounce and throttle functions with cancel support",
+    "content": "/**\n * Custom Debounce va Throttle funksiyalari\n * Tez-tez chaqiriladigan hodisalarni (scroll, resize, search input) optimizatsiya qilish\n */\n\nexport function debounce<T extends (...args: any[]) => any>(\n  func: T,\n  delay: number\n): { (...args: Parameters<T>): void; cancel: () => void } {\n  let timerId: ReturnType<typeof setTimeout> | null = null;\n\n  const debounced = (...args: Parameters<T>) => {\n    if (timerId !== null) {\n      clearTimeout(timerId);\n    }\n    timerId = setTimeout(() => {\n      func(...args);\n      timerId = null;\n    }, delay);\n  };\n\n  debounced.cancel = () => {\n    if (timerId !== null) {\n      clearTimeout(timerId);\n      timerId = null;\n    }\n  };\n\n  return debounced;\n}\n\nexport function throttle<T extends (...args: any[]) => any>(\n  func: T,\n  limit: number\n): (...args: Parameters<T>) => void {\n  let inThrottle = false;\n\n  return (...args: Parameters<T>) => {\n    if (!inThrottle) {\n      func(...args);\n      inThrottle = true;\n      setTimeout(() => {\n        inThrottle = false;\n      }, limit);\n    }\n  };\n}\n"
+  },
+  {
+    "id": "t-03",
+    "type": "theory",
+    "title": "Zustand vs Redux Toolkit: Nega Zustand ommalashmoqda?",
+    "category": "State Management",
+    "folder": "konspektlar",
+    "filename": "03-zustand-vs-redux-toolkit.md",
+    "commitMessage": "docs(konspekt): add Zustand vs Redux Toolkit architecture comparison",
+    "content": "# 🐻 Zustand vs Redux Toolkit: Qaysi birini tanlash kerak?\n\nFrontend dasturlashda global holatni (Global State) boshqarish uchun eng mashhur ikkita vosita bu **Redux Toolkit (RTK)** va **Zustand**dir.\n\n---\n\n## 📊 Qiyosiy taqqoslash:\n\n| Xususiyat | Redux Toolkit | Zustand |\n| :--- | :--- | :--- |\n| **Boilerplate kod** | Ko'p (Slice, Store, Provider, Hooks) | Juda kam (1 ta `create` funksiyasi) |\n| **Provider kerakmi?** | Ha (`<Provider store={store}>`) | **Yo'q!** To'g'ridan-to'g'ri chaqiriladi |\n| **Kutubxona hajmi** | ~35-40 KB | **~1-2 KB** (O'ta yengil) |\n| **O'rganish tezligi** | O'rtacha | Juda tez va tushunarli |\n| **Asinxron amallar** | `createAsyncThunk` kerak | Oddiy `async/await` funksiya kifoya |\n\n---\n\n## 🚀 Xulosa:\n\n* **Zustand** — Kichik, o'rta va ko'plab zamonaviy yirik loyihalar uchun eng tezkor, qulay va yengil yechim.\n* **Redux Toolkit** — Juda katta korporativ jamoalarda qat'iy standartlar talab qilinganda ishlatiladi.\n"
+  },
+  {
+    "id": "p-03",
+    "type": "practical",
+    "title": "useLocalStorage React Custom Hook with Cross-Tab Sync",
+    "category": "React Hooks",
+    "folder": "amaliyot",
+    "filename": "03-use-local-storage.ts",
+    "commitMessage": "feat(amaliyot): create useLocalStorage custom React hook with tab synchronization",
+    "content": "import { useState, useEffect, useCallback } from 'react';\n\n/**\n * useLocalStorage custom hook\n * Brauzer localStorage bilan state o'rtasida reaktiv bog'lanish yaratadi\n */\nexport function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((val: T) => T)) => void] {\n  const readValue = useCallback((): T => {\n    if (typeof window === 'undefined') {\n      return initialValue;\n    }\n\n    try {\n      const item = window.localStorage.getItem(key);\n      return item ? (JSON.parse(item) as T) : initialValue;\n    } catch (error) {\n      console.warn(`localStorage kaliti \"${key}\" o'qishda xatolik:`, error);\n      return initialValue;\n    }\n  }, [key, initialValue]);\n\n  const [storedValue, setStoredValue] = useState<T>(readValue);\n\n  const setValue = useCallback(\n    (value: T | ((val: T) => T)) => {\n      try {\n        const newValue = value instanceof Function ? value(storedValue) : value;\n        window.localStorage.setItem(key, JSON.stringify(newValue));\n        setStoredValue(newValue);\n        window.dispatchEvent(new Event('local-storage-change'));\n      } catch (error) {\n        console.warn(`localStorage kaliti \"${key}\" yozishda xatolik:`, error);\n      }\n    },\n    [key, storedValue]\n  );\n\n  useEffect(() => {\n    const handleStorageChange = () => {\n      setStoredValue(readValue());\n    };\n\n    window.addEventListener('storage', handleStorageChange);\n    window.addEventListener('local-storage-change', handleStorageChange);\n\n    return () => {\n      window.removeEventListener('storage', handleStorageChange);\n      window.removeEventListener('local-storage-change', handleStorageChange);\n    };\n  }, [readValue]);\n\n  return [storedValue, setValue];\n}\n"
+  },
+  {
+    "id": "t-04",
+    "type": "theory",
+    "title": "JavaScript Closures (Yopiq funksiyalar) va Scope",
+    "category": "JavaScript Core",
+    "folder": "konspektlar",
+    "filename": "04-javascript-closures.md",
+    "commitMessage": "docs(konspekt): explain JavaScript Closures, lexical environment and practical uses",
+    "content": "# 🔒 JavaScript Closures (Yopiq muhit)\n\n**Closure** — bu ichki funksiyaning o'zidan tashqaridagi (ota) leksik muhitdagi (Lexical Environment) o'zgaruvchilarni, hatto ota funksiya ishlab bo'lib yakunlangan bo'lsa ham, **eslab qolish** qobiliyatidir.\n\n---\n\n## 📝 Oddiy amaliy misol:\n\n```javascript\nfunction createCounter() {\n  let count = 0; // Private o'zgaruvchi\n\n  return {\n    increment: () => ++count,\n    decrement: () => --count,\n    getCount: () => count\n  };\n}\n\nconst counter = createCounter();\nconsole.log(counter.increment()); // 1\nconsole.log(counter.increment()); // 2\nconsole.log(counter.getCount());  // 2\n// count o'zgaruvchisini to'g'ridan-to'g'ri tashqaridan o'zgartirib bo'lmaydi!\n```\n\n---\n\n## 🎯 Asosiy foydasi:\n1. **Data Encapsulation (Ma'lumotlarni yashirish)**: Private o'zgaruvchilar yaratish.\n2. **Funksiyalarni kuryerlash (Currying)**.\n3. **Callback va hodisalar boshqaruvida holatni saqlash**.\n"
+  },
+  {
+    "id": "p-04",
+    "type": "practical",
+    "title": "Deep Clone Utility with Circular Reference Handling",
+    "category": "JavaScript Core",
+    "folder": "amaliyot",
+    "filename": "04-deep-clone-util.ts",
+    "commitMessage": "feat(amaliyot): implement deep clone function supporting circular references",
+    "content": "/**\n * Mukammal Deep Clone funksiyasi\n * Obyekt va massivlarni xotirada to'liq yangi nusxasini yaratadi\n */\nexport function deepClone<T>(obj: T, hash = new WeakMap()): T {\n  // Primitiv qiymatlar va funksiyalar to'g'ridan-to'g'ri qaytariladi\n  if (Object(obj) !== obj || typeof obj === 'function') {\n    return obj;\n  }\n\n  // Siklik bog'lanishlarni (circular references) tekshirish\n  if (hash.has(obj as object)) {\n    return hash.get(obj as object);\n  }\n\n  // Date va RegExp obyektlarini alohida ko'chirish\n  if (obj instanceof Date) return new Date(obj.getTime()) as unknown as T;\n  if (obj instanceof RegExp) return new RegExp(obj.source, obj.flags) as unknown as T;\n\n  // Massiv yoki Obyekt uchun yangi nusxa\n  const result = (Array.isArray(obj) ? [] : Object.create(Object.getPrototypeOf(obj))) as T;\n  hash.set(obj as object, result);\n\n  for (const key of Object.keys(obj)) {\n    (result as any)[key] = deepClone((obj as any)[key], hash);\n  }\n\n  return result;\n}\n"
+  },
+  {
+    "id": "t-05",
+    "type": "theory",
+    "title": "React Performance: useMemo, useCallback va React.memo",
+    "category": "React Optimization",
+    "folder": "konspektlar",
+    "filename": "05-react-performance-optimization.md",
+    "commitMessage": "docs(konspekt): add React optimization guide with useMemo, useCallback and React.memo",
+    "content": "# ⚡ React Performance Optimizatsiya: Qachon ishlatish kerak?\n\nKo'pincha yangi dasturchilar har bir funksiya va o'zgaruvchini `useCallback` yoki `useMemo` bilan o'rab chiqishadi. Bu aslida teskari natija — dastur ishlashini sekinlashtirishi mumkin.\n\n---\n\n## 🔍 Qachon ishlatish kerak?\n\n1. **`React.memo`**:\n   * Komponent faqat Props o'zgargandagina qayta render bo'lishi kerak bo'lsa.\n\n2. **`useCallback`**:\n   * Komponent ichidagi funksiyani `React.memo` bilan o'ralgan bolalar (child) komponentlarga prop sifatida uzatayotganda.\n   * Aks holda har renderda yangi funksiya havolasi (reference) yaratilib, child baribir qayta chiziladi.\n\n3. **`useMemo`**:\n   * Qimmat (og'ir) hisob-kitob natijalarini keshlab turish uchun:\n   ```tsx\n   const filteredList = useMemo(() => {\n     return heavyCalculation(items);\n   }, [items]);\n   ```\n"
+  },
+  {
+    "id": "p-05",
+    "type": "practical",
+    "title": "Fetch with Exponential Backoff Retry Utility",
+    "category": "Network & API",
+    "folder": "amaliyot",
+    "filename": "05-fetch-with-retry.ts",
+    "commitMessage": "feat(amaliyot): implement fetchWithRetry with exponential backoff algorithm",
+    "content": "/**\n * Fetch with Retry & Exponential Backoff\n * Tarmoq uzilishlari yoki server vaqtincha javob bermagan holatlarda avtomatik qayta so'rov yuborish\n */\n\ninterface RetryOptions {\n  retries?: number;\n  delayMs?: number;\n  backoffFactor?: number;\n}\n\nexport async function fetchWithRetry(\n  url: string,\n  options: RequestInit = {},\n  retryOptions: RetryOptions = {}\n): Promise<Response> {\n  const { retries = 3, delayMs = 1000, backoffFactor = 2 } = retryOptions;\n\n  let attempt = 0;\n  let currentDelay = delayMs;\n\n  while (attempt < retries) {\n    try {\n      const response = await fetch(url, options);\n      if (response.ok || response.status < 500) {\n        return response; // 2xx, 3xx yoki 4xx da qayta urinmaydi\n      }\n      throw new Error(`Server xatosi: ${response.status}`);\n    } catch (err) {\n      attempt++;\n      if (attempt >= retries) {\n        throw err;\n      }\n      console.warn(`So'rov muvaffaqiyatsiz bo'ldi. ${currentDelay}ms dan so'ng qayta uriniladi (urinish: ${attempt}/${retries})`);\n      await new Promise(resolve => setTimeout(resolve, currentDelay));\n      currentDelay *= backoffFactor;\n    }\n  }\n\n  throw new Error('Maksimal urinishlar soni tugadi');\n}\n"
+  },
+  {
+    "id": "t-06",
+    "type": "theory",
+    "title": "TypeScript: Interface vs Type Aliases qiyosiy tahlili",
+    "category": "TypeScript",
+    "folder": "konspektlar",
+    "filename": "06-typescript-interface-vs-type.md",
+    "commitMessage": "docs(konspekt): add comprehensive TypeScript Interface vs Type comparison guide",
+    "content": "# 📘 TypeScript: `interface` vs `type`\n\nTypeScript'da ma'lumotlar tuzilmasini aniqlash uchun `interface` yoki `type` ishlatiladi. Ular ko'p jihatdan bir-biriga o'xshash, lekin muhim farqlari bor.\n\n---\n\n## ⚖️ Asosiy farqlar:\n\n1. **Declaration Merging (Bir nomli interfeyslarni birlashtirish)**:\n   * `interface` bir xil nom bilan bir necha bor e'lon qilinsa, maydonlari avtomatik birlashadi.\n   * `type`da esa nomni takrorlab bo'lmaydi (xatolik beradi).\n\n2. **Union va Primitivlar**:\n   * `type` orqali Union (`type Status = 'pending' | 'success'`) va primitivlarni nomlash mumkin.\n   * `interface` esa faqat Obyekt yoki Funksiya strukturalarini tasvirlaydi.\n\n---\n\n## 💡 Qoida:\n* Obyekt shakllari va kutubxona modellariga ko'pincha **`interface`**,\n* Union, Tuple va murakkab tiplar kombinatsiyasiga esa **`type`** tavsiya etiladi.\n"
+  },
+  {
+    "id": "p-06",
+    "type": "practical",
+    "title": "Form Validation and Sanitization Rules",
+    "category": "Forms & Security",
+    "folder": "amaliyot",
+    "filename": "06-form-validators.ts",
+    "commitMessage": "feat(amaliyot): add form validation regex rules and sanitization helpers",
+    "content": "/**\n * Forma ma'lumotlarini tekshirish va tozalash qoidalari\n */\n\nexport const Validators = {\n  isEmail: (email: string): boolean => {\n    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/;\n    return emailRegex.test(email.trim());\n  },\n\n  isUzbekPhone: (phone: string): boolean => {\n    // Format: +998901234567 yoki 998901234567\n    const phoneRegex = /^(\\+?998)?[0-9]{9}$/;\n    const cleanPhone = phone.replace(/\\s+/g, '');\n    return phoneRegex.test(cleanPhone);\n  },\n\n  isStrongPassword: (password: string): { isValid: boolean; errors: string[] } => {\n    const errors: string[] = [];\n    if (password.length < 8) errors.push('Kamida 8 ta belgidan iborat bo\\'lishi kerak');\n    if (!/[A-Z]/.test(password)) errors.push('Kamida 1 ta katta harf bo\\'lishi kerak');\n    if (!/[a-z]/.test(password)) errors.push('Kamida 1 ta kichik harf bo\\'lishi kerak');\n    if (!/[0-9]/.test(password)) errors.push('Kamida 1 ta raqam bo\\'lishi kerak');\n\n    return {\n      isValid: errors.length === 0,\n      errors\n    };\n  },\n\n  sanitizeInput: (input: string): string => {\n    return input\n      .replace(/&/g, '&amp;')\n      .replace(/</g, '&lt;')\n      .replace(/>/g, '&gt;')\n      .replace(/\"/g, '&quot;')\n      .replace(/'/g, '&#039;');\n  }\n};\n"
+  },
+  {
+    "id": "t-07",
+    "type": "theory",
+    "title": "CSS Grid va Flexbox: 1D va 2D tartiblash farqlari",
+    "category": "CSS & Layout",
+    "folder": "konspektlar",
+    "filename": "07-css-flexbox-vs-grid.md",
+    "commitMessage": "docs(konspekt): add CSS Flexbox vs Grid architectural decision guide",
+    "content": "# 🎨 CSS Flexbox vs CSS Grid\n\nZamonaviy veb-dizaynda qachon Flexbox va qachon Grid ishlatish kerakligi eng ko'p so'raladigan savollardan biridir.\n\n---\n\n## 📌 Asosiy farq:\n\n* **Flexbox (1D - Bir o'lchovli)**: Elementlarni faqat bitta yo'nalishda — yoki qator (row) yoki ustun (column) bo'yicha joylashtiradi.\n  * *Eng yaxshi holatlar*: Navbar menyulari, tugmalar guruhi, card ichidagi elementlar.\n* **Grid (2D - Ikki o'lchovli)**: Elementlarni bir vaqtning o'zida ham qator, ham ustun bo'yicha kataklarga ajratib joylashtiradi.\n  * *Eng yaxshi holatlar*: Butun sahifa tartibi (Dashboard layout), galereyalar, murakkab kartalar to'plami.\n"
+  },
+  {
+    "id": "p-07",
+    "type": "practical",
+    "title": "useDebounceValue Hook for Search Inputs",
+    "category": "React Hooks",
+    "folder": "amaliyot",
+    "filename": "07-use-debounce-value.ts",
+    "commitMessage": "feat(amaliyot): create useDebounceValue React hook for real-time search inputs",
+    "content": "import { useState, useEffect } from 'react';\n\n/**\n * useDebounceValue Hook\n * Qidiruv maydoni (Search Input)da foydalanuvchi yozishni tugatguncha kutish uchun ishlatiladi\n */\nexport function useDebounceValue<T>(value: T, delay: number = 300): T {\n  const [debouncedValue, setDebouncedValue] = useState<T>(value);\n\n  useEffect(() => {\n    const timer = setTimeout(() => {\n      setDebouncedValue(value);\n    }, delay);\n\n    return () => {\n      clearTimeout(timer);\n    };\n  }, [value, delay]);\n\n  return debouncedValue;\n}\n"
+  },
+  {
+    "id": "t-08",
+    "type": "theory",
+    "title": "Browser Storage: localStorage, sessionStorage va Cookies",
+    "category": "Browser APIs",
+    "folder": "konspektlar",
+    "filename": "08-browser-storage-comparison.md",
+    "commitMessage": "docs(konspekt): add Browser Storage comparison (localStorage, sessionStorage, Cookies)",
+    "content": "# 💾 Brauzer Xotirasi: localStorage vs sessionStorage vs Cookies\n\nFoydalanuvchi ma'lumotlarini brauzerda saqlashning 3 ta asosiy usuli bor:\n\n---\n\n| Xususiyat | localStorage | sessionStorage | Cookies |\n| :--- | :--- | :--- | :--- |\n| **Yashash muddati** | Qo'lda o'chirilmaguncha saqlanadi | Tab (oyna) yopilguncha | Belgilangan Expire vaqti tugaguncha |\n| **Hajmi** | ~5-10 MB | ~5 MB | ~4 KB |\n| **Serverga yuboriladimi?** | Yo'q | Yo'q | Ha (Har bir HTTP so'rov bilan yuboriladi) |\n| **Xavfsizlik** | XSS hujumiga moyil | XSS hujumiga moyil | `HttpOnly` bayrog'i bilan XSS dan himoyalash mumkin |\n"
+  },
+  {
+    "id": "p-08",
+    "type": "practical",
+    "title": "Custom Event Emitter / Pub-Sub Implementation",
+    "category": "Design Patterns",
+    "folder": "amaliyot",
+    "filename": "08-event-emitter.ts",
+    "commitMessage": "feat(amaliyot): implement type-safe EventEmitter pub-sub pattern in TypeScript",
+    "content": "/**\n * Type-Safe Event Emitter (Publish-Subscribe Pattern)\n * Komponentlar yoki modullar o'rtasida global bog'liqliksiz xabar almashish\n */\n\ntype Listener<T> = (data: T) => void;\n\nexport class EventEmitter<Events extends Record<string, any>> {\n  private events: { [K in keyof Events]?: Listener<Events[K]>[] } = {};\n\n  on<K extends keyof Events>(event: K, listener: Listener<Events[K]>): () => void {\n    if (!this.events[event]) {\n      this.events[event] = [];\n    }\n    this.events[event]!.push(listener);\n\n    // Unsubscribe funksiyasini qaytarish\n    return () => this.off(event, listener);\n  }\n\n  off<K extends keyof Events>(event: K, listener: Listener<Events[K]>): void {\n    if (!this.events[event]) return;\n    this.events[event] = this.events[event]!.filter(l => l !== listener);\n  }\n\n  emit<K extends keyof Events>(event: K, data: Events[K]): void {\n    if (!this.events[event]) return;\n    this.events[event]!.forEach(listener => listener(data));\n  }\n}\n"
+  },
+  {
+    "id": "t-09",
+    "type": "theory",
+    "title": "Clean Code: Frontend Dasturlashda SOLID va DRY Qoidalari",
+    "category": "Software Architecture",
+    "folder": "konspektlar",
+    "filename": "09-clean-code-principles-frontend.md",
+    "commitMessage": "docs(konspekt): add Clean Code and DRY guidelines for frontend engineering",
+    "content": "# 🧼 Frontend Dasturlashda Clean Code Qoidalari\n\nToza kod yozish — nafaqat jamoada ishlashni osonlashtiradi, balki loyihani kelajakda kengaytirishda xatoliklarning oldini oladi.\n\n---\n\n## 🎯 4 ta Oltin Qoida:\n\n1. **DRY (Don't Repeat Yourself)**:\n   * Bir xil kodni ikki joyda takrorlamang. Uni alohida funksiya yoki Custom Hook'ga chiqaring.\n2. **KISS (Keep It Simple, Stupid)**:\n   * Oddiy yechim har doim murakkab arxitekturadan yaxshiroq.\n3. **Single Responsibility (Yagona javobgarlik)**:\n   * Bitta komponent faqat bitta ishni bajarsin (masalan, `UserCard` faqat profilni ko'rsatsin, API'dan yuklash bilan shug'ullanmasin).\n4. **Aniq va ma'noli nomlash**:\n   * O'zgaruvchilarga `data`, `item`, `x` emas, nima ekanligini bildiruvchi aniq nom bering (`userData`, `productItem`).\n"
+  },
+  {
+    "id": "p-09",
+    "type": "practical",
+    "title": "useClickOutside Hook for Modals and Dropdowns",
+    "category": "React Hooks",
+    "folder": "amaliyot",
+    "filename": "09-use-click-outside.ts",
+    "commitMessage": "feat(amaliyot): add useClickOutside hook for modal and dropdown dismissing",
+    "content": "import { useEffect, RefObject } from 'react';\n\n/**\n * useClickOutside Hook\n * Berilgan elementdan tashqariga bosilganda modal yoki menyuni yopish\n */\nexport function useClickOutside<T extends HTMLElement = HTMLElement>(\n  ref: RefObject<T | null>,\n  handler: (event: MouseEvent | TouchEvent) => void\n): void {\n  useEffect(() => {\n    const listener = (event: MouseEvent | TouchEvent) => {\n      const el = ref.current;\n      if (!el || el.contains((event.target as Node) || null)) {\n        return;\n      }\n      handler(event);\n    };\n\n    document.addEventListener('mousedown', listener);\n    document.addEventListener('touchstart', listener);\n\n    return () => {\n      document.removeEventListener('mousedown', listener);\n      document.removeEventListener('touchstart', listener);\n    };\n  }, [ref, handler]);\n}\n"
+  },
+  {
+    "id": "t-10",
+    "type": "theory",
+    "title": "Core Web Vitals: LCP, INP va CLS Optimizatsiya",
+    "category": "Web Performance",
+    "folder": "konspektlar",
+    "filename": "10-core-web-vitals-guide.md",
+    "commitMessage": "docs(konspekt): add Core Web Vitals optimization guide (LCP, INP, CLS)",
+    "content": "# 🚀 Core Web Vitals: Sayt tezligini oshirish bo'yicha qo'llanma\n\nGoogle tomonidan veb-sayt foydalanuvchi tajribasini (UX) baholash uchun belgilangan 3 ta asosiy metrika:\n\n---\n\n1. **LCP (Largest Contentful Paint)**:\n   * Asosiy katta kontent (masalan: hero rasm yoki katta matn) qanchalik tez ko'rinishi.\n   * *Yaxshi ko'rsatkich*: < 2.5 soniya.\n2. **INP (Interaction to Next Paint)**:\n   * Foydalanuvchi sahifada biror tugmani bosganda ekranning javob qaytarish tezligi.\n   * *Yaxshi ko'rsatkich*: < 200 ms.\n3. **CLS (Cumulative Layout Shift)**:\n   * Sahifa yuklanayotganda elementlarning kutilmaganda sakrab, joyini o'zgartirishi.\n   * *Yaxshi ko'rsatkich*: < 0.1.\n"
+  },
+  {
+    "id": "p-10",
+    "type": "practical",
+    "title": "Async Task Queue Processor with Concurrency Limit",
+    "category": "Asynchronous Programming",
+    "folder": "amaliyot",
+    "filename": "10-async-queue-pool.ts",
+    "commitMessage": "feat(amaliyot): implement async task queue processor with concurrency pool",
+    "content": "/**\n * Async Task Queue Pool\n * Bir vaqtning o'zida maksimal N ta so'rovni parallel bajaruvchi navbat boshqaruvchisi\n */\n\nexport class AsyncQueue {\n  private queue: (() => Promise<any>)[] = [];\n  private running = 0;\n\n  constructor(private concurrency: number = 3) {}\n\n  add<T>(task: () => Promise<T>): Promise<T> {\n    return new Promise<T>((resolve, reject) => {\n      this.queue.push(async () => {\n        try {\n          const result = await task();\n          resolve(result);\n        } catch (error) {\n          reject(error);\n        }\n      });\n      this.processNext();\n    });\n  }\n\n  private async processNext(): Promise<void> {\n    if (this.running >= this.concurrency || this.queue.length === 0) {\n      return;\n    }\n\n    this.running++;\n    const nextTask = this.queue.shift();\n\n    if (nextTask) {\n      try {\n        await nextTask();\n      } finally {\n        this.running--;\n        this.processNext();\n      }\n    }\n  }\n}\n"
+  }
+]

@@ -4,7 +4,7 @@ on:
   schedule:
     # Har kuni Toshkent vaqti bilan soat 23:30 da (UTC 18:30)
     - cron: '30 18 * * *'
-  workflow_dispatch: # Istalgan paytda GitHub interfeysidan "Run workflow" orqali sinab ko'rish
+  workflow_dispatch: # GitHub UI-dan "Run workflow" orqali sinab ko'rish
 
 permissions:
   contents: write
@@ -33,26 +33,20 @@ jobs:
           echo "status=$STATUS" >> $GITHUB_OUTPUT
           exit 0
 
-      - name: Agar push qilinmagan bo'lsa, commit va push qilish
+      - name: Agar bugun push qilinmagan bo'lsa - Navbatdagi dars/masalani yaratish
+        id: publish_topic
+        if: steps.check_activity.outputs.status == '10'
+        run: |
+          node scripts/publish-daily-topic.cjs
+
+      - name: O'zgarishlarni commit va push qilish
         if: steps.check_activity.outputs.status == '10'
         run: |
           git config --global user.name "Komila Zokirova"
           git config --global user.email "zokirovakomila500@gmail.com"
           
-          TODAY=$(TZ="Asia/Tashkent" date +'%Y-%m-%d')
-          TIME=$(TZ="Asia/Tashkent" date +'%H:%M')
-          
-          if [ ! -f ACTIVITY.md ]; then
-            echo "# 📈 Kunlik Faollik Jurnali (Daily Activity Log)" > ACTIVITY.md
-            echo "" >> ACTIVITY.md
-            echo "| Sana | Vaqt (Toshkent) | Holat | Izoh |" >> ACTIVITY.md
-            echo "| :--- | :--- | :--- | :--- |" >> ACTIVITY.md
-          fi
-          
-          echo "| $TODAY | $TIME | Avtomatik | Kunlik faollik saqlandi |" >> ACTIVITY.md
-          
-          git add ACTIVITY.md
-          git commit -m "chore(activity): daily log update for $TODAY [skip ci]"
+          git add .
+          git commit -m "${{ steps.publish_topic.outputs.commit_msg || 'feat: add daily frontend learning topic [skip ci]' }}"
           git push origin main
           echo "✅ Muvaffaqiyatli commit va push qilindi!"
 
