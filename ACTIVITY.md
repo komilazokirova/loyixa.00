@@ -7,3 +7,4 @@ Agar foydalanuvchi o'sha kuni biror repo'ga kod push **qilmagan bo'lsa**, profil
 | :--- | :--- | :--- | :--- |
 | 2026-10-14 | 10:30 | Faollashtirildi | Avtomatik tizim sozlandi |
 | ${dateStr} | ${timeStr} | ${typeName} | ${selectedTopic.title} | [${selectedTopic.filename}](${selectedTopic.folder}/${selectedTopic.filename}) |\n
+| 2026-10-15 | 23:30 | ðŸ’» Amaliy Kod | Array Transformation Utilities (groupBy, chunk, uniqueBy) | [01-array-transformation-utils.ts](amaliyot/01-array-transformation-utils.ts) |
