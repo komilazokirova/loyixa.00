@@ -63,7 +63,17 @@ jobs:
           fi
           
           git commit -m "$COMMIT_MSG"
-          git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" HEAD:main
+          
+          echo "Push jarayoni boshlanmoqda..."
+          git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" HEAD:main 2> push_err.txt || {
+            ERR_MSG=$(cat push_err.txt)
+            echo "::error title=Git Push Xatoligi::$ERR_MSG"
+            echo "=========================================="
+            echo "XATOLIK: $ERR_MSG"
+            echo "Agar xatolikda 'Permission denied' yoki '403' bo'lsa, Settings -> Actions -> General -> Workflow permissions bo'limida 'Read and write permissions' yoqilishi shart!"
+            echo "=========================================="
+            exit 1
+          }
           echo "✅ Muvaffaqiyatli commit va push qilindi!"
 
       - name: Agar allaqachon push qilingan bo'lsa
