@@ -4,7 +4,7 @@ on:
   schedule:
     # Har kuni Toshkent vaqti bilan soat 23:30 da (UTC 18:30)
     - cron: '30 18 * * *'
-  workflow_dispatch: # Qo'lda sinash uchun
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -16,7 +16,7 @@ jobs:
       - name: Repozitoriyani yuklab olish
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref || 'main' }}
+          ref: main
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
@@ -44,7 +44,7 @@ jobs:
         if: steps.check_activity.outputs.status == '10'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: ${{ steps.publish_topic.outputs.commit_msg || 'feat: add daily frontend learning topic' }}
+          commit_message: "${{ steps.publish_topic.outputs.commit_msg }}"
           commit_user_name: "Komila Zokirova"
           commit_user_email: "zokirovakomila500@gmail.com"
           commit_author: "Komila Zokirova <zokirovakomila500@gmail.com>"
