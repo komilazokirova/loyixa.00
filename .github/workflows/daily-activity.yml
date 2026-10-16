@@ -4,7 +4,7 @@ on:
   schedule:
     # Har kuni Toshkent vaqti bilan soat 23:30 da (UTC 18:30)
     - cron: '30 18 * * *'
-  workflow_dispatch: # GitHub UI-dan qo'lda sinash uchun
+  workflow_dispatch: # Qo'lda sinash uchun
 
 permissions:
   contents: write
@@ -16,13 +16,9 @@ jobs:
       - name: Repozitoriyani yuklab olish
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.head_ref || 'main' }}
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
-
-      - name: Branch holatini tekshirish va main ga o'tish
-        run: |
-          git checkout -B main origin/main
 
       - name: Node.js muhitini tayyorlash
         uses: actions/setup-node@v4
@@ -46,35 +42,13 @@ jobs:
 
       - name: O'zgarishlarni commit va push qilish
         if: steps.check_activity.outputs.status == '10'
-        run: |
-          git config --global user.name "Komila Zokirova"
-          git config --global user.email "zokirovakomila500@gmail.com"
-          
-          git add -A
-          
-          if git diff --staged --quiet; then
-            echo "Hech qanday yangi o'zgarish yo'q, commit shart emas."
-            exit 0
-          fi
-          
-          COMMIT_MSG="${{ steps.publish_topic.outputs.commit_msg }}"
-          if [ -z "$COMMIT_MSG" ]; then
-            COMMIT_MSG="feat: add daily frontend learning topic [skip ci]"
-          fi
-          
-          git commit -m "$COMMIT_MSG"
-          
-          echo "Push jarayoni boshlanmoqda..."
-          git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" HEAD:main 2> push_err.txt || {
-            ERR_MSG=$(cat push_err.txt)
-            echo "::error title=Git Push Xatoligi::$ERR_MSG"
-            echo "=========================================="
-            echo "XATOLIK: $ERR_MSG"
-            echo "Agar xatolikda 'Permission denied' yoki '403' bo'lsa, Settings -> Actions -> General -> Workflow permissions bo'limida 'Read and write permissions' yoqilishi shart!"
-            echo "=========================================="
-            exit 1
-          }
-          echo "✅ Muvaffaqiyatli commit va push qilindi!"
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: ${{ steps.publish_topic.outputs.commit_msg || 'feat: add daily frontend learning topic' }}
+          commit_user_name: "Komila Zokirova"
+          commit_user_email: "zokirovakomila500@gmail.com"
+          commit_author: "Komila Zokirova <zokirovakomila500@gmail.com>"
+          skip_ci: true
 
       - name: Agar allaqachon push qilingan bo'lsa
         if: steps.check_activity.outputs.status == '0'
