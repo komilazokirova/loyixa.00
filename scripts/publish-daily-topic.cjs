@@ -44,7 +44,7 @@ function run() {
 
   const fullFilePath = path.join(targetDir, selectedTopic.filename);
   fs.writeFileSync(fullFilePath, selectedTopic.content, 'utf-8');
-  console.log(`✅ Yangi fayl yaratildi: \${selectedTopic.folder}/\${selectedTopic.filename}`);
+  console.log(`✅ Yangi fayl yaratildi: ${selectedTopic.folder}/${selectedTopic.filename}`);
 
   // ACTIVITY.md jurnalini yangilash
   const now = new Date();
@@ -54,20 +54,20 @@ function run() {
   const timeStr = tashkentNow.toISOString().slice(11, 16);
 
   if (!fs.existsSync(ACTIVITY_FILE)) {
-    fs.writeFileSync(ACTIVITY_FILE, '# 📈 Kunlik Faollik Jurnali\\n\\n| Sana | Vaqt | Turi | Mavzu | Fayl |\\n| :--- | :--- | :--- | :--- | :--- |\\n', 'utf-8');
+    fs.writeFileSync(ACTIVITY_FILE, '# 📈 Kunlik Faollik Jurnali\n\n| Sana | Vaqt | Turi | Mavzu | Fayl |\n| :--- | :--- | :--- | :--- | :--- |\n', 'utf-8');
   }
 
   const typeName = selectedTopic.type === 'practical' ? '💻 Amaliy Kod' : '📚 Konspekt';
-  const logLine = `| \${dateStr} | \${timeStr} | \${typeName} | \${selectedTopic.title} | [\${selectedTopic.filename}](\${selectedTopic.folder}/\${selectedTopic.filename}) |\\n`;
+  const logLine = `| ${dateStr} | ${timeStr} | ${typeName} | ${selectedTopic.title} | [${selectedTopic.filename}](${selectedTopic.folder}/${selectedTopic.filename}) |\n`;
   fs.appendFileSync(ACTIVITY_FILE, logLine, 'utf-8');
 
   // GitHub Actions output parametrini o'rnatish
   const commitMsg = selectedTopic.commitMessage;
-  console.log(`COMMIT_MSG: \${commitMsg}`);
+  console.log(`COMMIT_MSG: ${commitMsg}`);
 
   if (process.env.GITHUB_OUTPUT) {
-    fs.appendFileSync(process.env.GITHUB_OUTPUT, `commit_msg=\${commitMsg}\\n`);
-    fs.appendFileSync(process.env.GITHUB_OUTPUT, `topic_title=\${selectedTopic.title}\\n`);
+    fs.appendFileSync(process.env.GITHUB_OUTPUT, 'commit_msg=' + commitMsg + '\n');
+    fs.appendFileSync(process.env.GITHUB_OUTPUT, 'topic_title=' + selectedTopic.title + '\n');
   }
 }
 

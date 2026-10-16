@@ -48,7 +48,6 @@ jobs:
           commit_user_name: "Komila Zokirova"
           commit_user_email: "zokirovakomila500@gmail.com"
           commit_author: "Komila Zokirova <zokirovakomila500@gmail.com>"
-          skip_ci: true
 
       - name: Agar allaqachon push qilingan bo'lsa
         if: steps.check_activity.outputs.status == '0'
