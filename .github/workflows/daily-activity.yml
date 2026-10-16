@@ -4,7 +4,7 @@ on:
   schedule:
     # Har kuni Toshkent vaqti bilan soat 23:30 da (UTC 18:30)
     - cron: '30 18 * * *'
-  workflow_dispatch: # GitHub UI-dan "Run workflow" orqali sinab ko'rish
+  workflow_dispatch: # GitHub UI-dan qo'lda sinash uchun
 
 permissions:
   contents: write
@@ -16,8 +16,13 @@ jobs:
       - name: Repozitoriyani yuklab olish
         uses: actions/checkout@v4
         with:
+          ref: main
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
+
+      - name: Branch holatini tekshirish va main ga o'tish
+        run: |
+          git checkout -B main origin/main
 
       - name: Node.js muhitini tayyorlash
         uses: actions/setup-node@v4
@@ -45,9 +50,20 @@ jobs:
           git config --global user.name "Komila Zokirova"
           git config --global user.email "zokirovakomila500@gmail.com"
           
-          git add .
-          git commit -m "${{ steps.publish_topic.outputs.commit_msg || 'feat: add daily frontend learning topic [skip ci]' }}"
-          git push origin main
+          git add -A
+          
+          if git diff --staged --quiet; then
+            echo "Hech qanday yangi o'zgarish yo'q, commit shart emas."
+            exit 0
+          fi
+          
+          COMMIT_MSG="${{ steps.publish_topic.outputs.commit_msg }}"
+          if [ -z "$COMMIT_MSG" ]; then
+            COMMIT_MSG="feat: add daily frontend learning topic [skip ci]"
+          fi
+          
+          git commit -m "$COMMIT_MSG"
+          git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" HEAD:main
           echo "✅ Muvaffaqiyatli commit va push qilindi!"
 
       - name: Agar allaqachon push qilingan bo'lsa
