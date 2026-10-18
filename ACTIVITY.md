@@ -10,3 +10,4 @@ Agar foydalanuvchi o'sha kuni biror repo'ga kod push **qilmagan bo'lsa**, profil
 | 2026-10-15 | 23:30 | ðŸ’» Amaliy Kod | Array Transformation Utilities (groupBy, chunk, uniqueBy) | [01-array-transformation-utils.ts](amaliyot/01-array-transformation-utils.ts) |
 | 2026-10-17 | 02:35 | 📚 Konspekt | React useEffect Lifecycle va Cleanup Funksiyalari | [02-react-use-effect-lifecycle.md](konspektlar/02-react-use-effect-lifecycle.md) |
 | 2026-10-18 | 01:50 | 💻 Amaliy Kod | Custom Debounce and Throttle Implementation | [02-custom-debounce-throttle.ts](amaliyot/02-custom-debounce-throttle.ts) |
+| 2026-10-19 | 01:57 | 📚 Konspekt | Zustand vs Redux Toolkit: Nega Zustand ommalashmoqda? | [03-zustand-vs-redux-toolkit.md](konspektlar/03-zustand-vs-redux-toolkit.md) |
