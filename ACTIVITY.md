@@ -12,3 +12,4 @@ Agar foydalanuvchi o'sha kuni biror repo'ga kod push **qilmagan bo'lsa**, profil
 | 2026-10-18 | 01:50 | 💻 Amaliy Kod | Custom Debounce and Throttle Implementation | [02-custom-debounce-throttle.ts](amaliyot/02-custom-debounce-throttle.ts) |
 | 2026-10-19 | 01:57 | 📚 Konspekt | Zustand vs Redux Toolkit: Nega Zustand ommalashmoqda? | [03-zustand-vs-redux-toolkit.md](konspektlar/03-zustand-vs-redux-toolkit.md) |
 | 2026-10-20 | 03:34 | 💻 Amaliy Kod | useLocalStorage React Custom Hook with Cross-Tab Sync | [03-use-local-storage.ts](amaliyot/03-use-local-storage.ts) |
+| 2026-10-21 | 02:48 | 📚 Konspekt | JavaScript Closures (Yopiq funksiyalar) va Scope | [04-javascript-closures.md](konspektlar/04-javascript-closures.md) |
