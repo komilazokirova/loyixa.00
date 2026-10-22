@@ -14,3 +14,4 @@ Agar foydalanuvchi o'sha kuni biror repo'ga kod push **qilmagan bo'lsa**, profil
 | 2026-10-20 | 03:34 | 💻 Amaliy Kod | useLocalStorage React Custom Hook with Cross-Tab Sync | [03-use-local-storage.ts](amaliyot/03-use-local-storage.ts) |
 | 2026-10-21 | 02:48 | 📚 Konspekt | JavaScript Closures (Yopiq funksiyalar) va Scope | [04-javascript-closures.md](konspektlar/04-javascript-closures.md) |
 | 2026-10-22 | 02:54 | 💻 Amaliy Kod | Deep Clone Utility with Circular Reference Handling | [04-deep-clone-util.ts](amaliyot/04-deep-clone-util.ts) |
+| 2026-10-23 | 02:51 | 📚 Konspekt | React Performance: useMemo, useCallback va React.memo | [05-react-performance-optimization.md](konspektlar/05-react-performance-optimization.md) |
