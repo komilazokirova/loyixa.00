@@ -15,3 +15,4 @@ Agar foydalanuvchi o'sha kuni biror repo'ga kod push **qilmagan bo'lsa**, profil
 | 2026-10-21 | 02:48 | 📚 Konspekt | JavaScript Closures (Yopiq funksiyalar) va Scope | [04-javascript-closures.md](konspektlar/04-javascript-closures.md) |
 | 2026-10-22 | 02:54 | 💻 Amaliy Kod | Deep Clone Utility with Circular Reference Handling | [04-deep-clone-util.ts](amaliyot/04-deep-clone-util.ts) |
 | 2026-10-23 | 02:51 | 📚 Konspekt | React Performance: useMemo, useCallback va React.memo | [05-react-performance-optimization.md](konspektlar/05-react-performance-optimization.md) |
+| 2026-10-24 | 02:35 | 💻 Amaliy Kod | Fetch with Exponential Backoff Retry Utility | [05-fetch-with-retry.ts](amaliyot/05-fetch-with-retry.ts) |
