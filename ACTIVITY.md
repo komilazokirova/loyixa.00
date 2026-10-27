@@ -18,3 +18,4 @@ Agar foydalanuvchi o'sha kuni biror repo'ga kod push **qilmagan bo'lsa**, profil
 | 2026-10-24 | 02:35 | 💻 Amaliy Kod | Fetch with Exponential Backoff Retry Utility | [05-fetch-with-retry.ts](amaliyot/05-fetch-with-retry.ts) |
 | 2026-10-26 | 02:06 | 📚 Konspekt | TypeScript: Interface vs Type Aliases qiyosiy tahlili | [06-typescript-interface-vs-type.md](konspektlar/06-typescript-interface-vs-type.md) |
 | 2026-10-27 | 03:49 | 💻 Amaliy Kod | Form Validation and Sanitization Rules | [06-form-validators.ts](amaliyot/06-form-validators.ts) |
+| 2026-10-28 | 03:30 | 📚 Konspekt | CSS Grid va Flexbox: 1D va 2D tartiblash farqlari | [07-css-flexbox-vs-grid.md](konspektlar/07-css-flexbox-vs-grid.md) |
