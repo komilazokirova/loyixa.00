@@ -20,3 +20,4 @@ Agar foydalanuvchi o'sha kuni biror repo'ga kod push **qilmagan bo'lsa**, profil
 | 2026-10-27 | 03:49 | 💻 Amaliy Kod | Form Validation and Sanitization Rules | [06-form-validators.ts](amaliyot/06-form-validators.ts) |
 | 2026-10-28 | 03:30 | 📚 Konspekt | CSS Grid va Flexbox: 1D va 2D tartiblash farqlari | [07-css-flexbox-vs-grid.md](konspektlar/07-css-flexbox-vs-grid.md) |
 | 2026-10-29 | 03:46 | 💻 Amaliy Kod | useDebounceValue Hook for Search Inputs | [07-use-debounce-value.ts](amaliyot/07-use-debounce-value.ts) |
+| 2026-10-30 | 03:54 | 📚 Konspekt | Browser Storage: localStorage, sessionStorage va Cookies | [08-browser-storage-comparison.md](konspektlar/08-browser-storage-comparison.md) |
