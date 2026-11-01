@@ -23,3 +23,4 @@ Agar foydalanuvchi o'sha kuni biror repo'ga kod push **qilmagan bo'lsa**, profil
 | 2026-10-30 | 03:54 | 📚 Konspekt | Browser Storage: localStorage, sessionStorage va Cookies | [08-browser-storage-comparison.md](konspektlar/08-browser-storage-comparison.md) |
 | 2026-10-31 | 03:35 | 💻 Amaliy Kod | Custom Event Emitter / Pub-Sub Implementation | [08-event-emitter.ts](amaliyot/08-event-emitter.ts) |
 | 2026-11-01 | 02:48 | 📚 Konspekt | Clean Code: Frontend Dasturlashda SOLID va DRY Qoidalari | [09-clean-code-principles-frontend.md](konspektlar/09-clean-code-principles-frontend.md) |
+| 2026-11-02 | 03:15 | 💻 Amaliy Kod | useClickOutside Hook for Modals and Dropdowns | [09-use-click-outside.ts](amaliyot/09-use-click-outside.ts) |
