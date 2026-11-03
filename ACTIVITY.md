@@ -25,3 +25,4 @@ Agar foydalanuvchi o'sha kuni biror repo'ga kod push **qilmagan bo'lsa**, profil
 | 2026-11-01 | 02:48 | 📚 Konspekt | Clean Code: Frontend Dasturlashda SOLID va DRY Qoidalari | [09-clean-code-principles-frontend.md](konspektlar/09-clean-code-principles-frontend.md) |
 | 2026-11-02 | 03:15 | 💻 Amaliy Kod | useClickOutside Hook for Modals and Dropdowns | [09-use-click-outside.ts](amaliyot/09-use-click-outside.ts) |
 | 2026-11-03 | 06:09 | 📚 Konspekt | Core Web Vitals: LCP, INP va CLS Optimizatsiya | [10-core-web-vitals-guide.md](konspektlar/10-core-web-vitals-guide.md) |
+| 2026-11-04 | 04:35 | 💻 Amaliy Kod | Async Task Queue Processor with Concurrency Limit | [10-async-queue-pool.ts](amaliyot/10-async-queue-pool.ts) |
