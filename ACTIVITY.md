@@ -29,3 +29,4 @@ Agar foydalanuvchi o'sha kuni biror repo'ga kod push **qilmagan bo'lsa**, profil
 | 2026-11-05 | 04:52 | 📚 Konspekt | JavaScript Closures (Yopiq funksiyalar) va Scope | [extra-${timestamp}-${base.filename}](konspektlar/extra-${timestamp}-${base.filename}) |
 | 2026-11-06 | 04:47 | 📚 Konspekt | Zustand vs Redux Toolkit: Nega Zustand ommalashmoqda? | [extra-${timestamp}-${base.filename}](konspektlar/extra-${timestamp}-${base.filename}) |
 | 2026-11-07 | 04:25 | 💻 Amaliy Kod | Custom Event Emitter / Pub-Sub Implementation | [extra-${timestamp}-${base.filename}](amaliyot/extra-${timestamp}-${base.filename}) |
+| 2026-11-08 | 03:13 | 💻 Amaliy Kod | Deep Clone Utility with Circular Reference Handling | [extra-${timestamp}-${base.filename}](amaliyot/extra-${timestamp}-${base.filename}) |
