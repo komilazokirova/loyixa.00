@@ -1,29 +1,47 @@
 /**
- * Mukammal Deep Clone funksiyasi
- * Obyekt va massivlarni xotirada to'liq yangi nusxasini yaratadi
+ * Custom Debounce va Throttle funksiyalari
+ * Tez-tez chaqiriladigan hodisalarni (scroll, resize, search input) optimizatsiya qilish
  */
-export function deepClone<T>(obj: T, hash = new WeakMap()): T {
-  // Primitiv qiymatlar va funksiyalar to'g'ridan-to'g'ri qaytariladi
-  if (Object(obj) !== obj || typeof obj === 'function') {
-    return obj;
-  }
 
-  // Siklik bog'lanishlarni (circular references) tekshirish
-  if (hash.has(obj as object)) {
-    return hash.get(obj as object);
-  }
+export function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  delay: number
+): { (...args: Parameters<T>): void; cancel: () => void } {
+  let timerId: ReturnType<typeof setTimeout> | null = null;
 
-  // Date va RegExp obyektlarini alohida ko'chirish
-  if (obj instanceof Date) return new Date(obj.getTime()) as unknown as T;
-  if (obj instanceof RegExp) return new RegExp(obj.source, obj.flags) as unknown as T;
+  const debounced = (...args: Parameters<T>) => {
+    if (timerId !== null) {
+      clearTimeout(timerId);
+    }
+    timerId = setTimeout(() => {
+      func(...args);
+      timerId = null;
+    }, delay);
+  };
 
-  // Massiv yoki Obyekt uchun yangi nusxa
-  const result = (Array.isArray(obj) ? [] : Object.create(Object.getPrototypeOf(obj))) as T;
-  hash.set(obj as object, result);
+  debounced.cancel = () => {
+    if (timerId !== null) {
+      clearTimeout(timerId);
+      timerId = null;
+    }
+  };
 
-  for (const key of Object.keys(obj)) {
-    (result as any)[key] = deepClone((obj as any)[key], hash);
-  }
+  return debounced;
+}
 
-  return result;
+export function throttle<T extends (...args: any[]) => any>(
+  func: T,
+  limit: number
+): (...args: Parameters<T>) => void {
+  let inThrottle = false;
+
+  return (...args: Parameters<T>) => {
+    if (!inThrottle) {
+      func(...args);
+      inThrottle = true;
+      setTimeout(() => {
+        inThrottle = false;
+      }, limit);
+    }
+  };
 }
