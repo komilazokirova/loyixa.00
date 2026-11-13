@@ -35,3 +35,4 @@ Agar foydalanuvchi o'sha kuni biror repo'ga kod push **qilmagan bo'lsa**, profil
 | 2026-11-11 | 04:38 | 💻 Amaliy Kod | Deep Clone Utility with Circular Reference Handling | [extra-${timestamp}-${base.filename}](amaliyot/extra-${timestamp}-${base.filename}) |
 | 2026-11-12 | 05:56 | 💻 Amaliy Kod | useClickOutside Hook for Modals and Dropdowns | [extra-${timestamp}-${base.filename}](amaliyot/extra-${timestamp}-${base.filename}) |
 | 2026-11-13 | 04:47 | 📚 Konspekt | CSS Grid va Flexbox: 1D va 2D tartiblash farqlari | [extra-${timestamp}-${base.filename}](konspektlar/extra-${timestamp}-${base.filename}) |
+| 2026-11-14 | 04:46 | 💻 Amaliy Kod | Fetch with Exponential Backoff Retry Utility | [extra-${timestamp}-${base.filename}](amaliyot/extra-${timestamp}-${base.filename}) |
