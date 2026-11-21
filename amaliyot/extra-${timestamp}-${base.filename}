@@ -1,53 +1,30 @@
-import { useState, useEffect, useCallback } from 'react';
-
 /**
- * useLocalStorage custom hook
- * Brauzer localStorage bilan state o'rtasida reaktiv bog'lanish yaratadi
+ * Type-Safe Event Emitter (Publish-Subscribe Pattern)
+ * Komponentlar yoki modullar o'rtasida global bog'liqliksiz xabar almashish
  */
-export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((val: T) => T)) => void] {
-  const readValue = useCallback((): T => {
-    if (typeof window === 'undefined') {
-      return initialValue;
+
+type Listener<T> = (data: T) => void;
+
+export class EventEmitter<Events extends Record<string, any>> {
+  private events: { [K in keyof Events]?: Listener<Events[K]>[] } = {};
+
+  on<K extends keyof Events>(event: K, listener: Listener<Events[K]>): () => void {
+    if (!this.events[event]) {
+      this.events[event] = [];
     }
+    this.events[event]!.push(listener);
 
-    try {
-      const item = window.localStorage.getItem(key);
-      return item ? (JSON.parse(item) as T) : initialValue;
-    } catch (error) {
-      console.warn(`localStorage kaliti "${key}" o'qishda xatolik:`, error);
-      return initialValue;
-    }
-  }, [key, initialValue]);
+    // Unsubscribe funksiyasini qaytarish
+    return () => this.off(event, listener);
+  }
 
-  const [storedValue, setStoredValue] = useState<T>(readValue);
+  off<K extends keyof Events>(event: K, listener: Listener<Events[K]>): void {
+    if (!this.events[event]) return;
+    this.events[event] = this.events[event]!.filter(l => l !== listener);
+  }
 
-  const setValue = useCallback(
-    (value: T | ((val: T) => T)) => {
-      try {
-        const newValue = value instanceof Function ? value(storedValue) : value;
-        window.localStorage.setItem(key, JSON.stringify(newValue));
-        setStoredValue(newValue);
-        window.dispatchEvent(new Event('local-storage-change'));
-      } catch (error) {
-        console.warn(`localStorage kaliti "${key}" yozishda xatolik:`, error);
-      }
-    },
-    [key, storedValue]
-  );
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setStoredValue(readValue());
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('local-storage-change', handleStorageChange);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('local-storage-change', handleStorageChange);
-    };
-  }, [readValue]);
-
-  return [storedValue, setValue];
+  emit<K extends keyof Events>(event: K, data: Events[K]): void {
+    if (!this.events[event]) return;
+    this.events[event]!.forEach(listener => listener(data));
+  }
 }
