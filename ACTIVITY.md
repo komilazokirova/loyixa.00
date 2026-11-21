@@ -40,3 +40,4 @@ Agar foydalanuvchi o'sha kuni biror repo'ga kod push **qilmagan bo'lsa**, profil
 | 2026-11-18 | 06:11 | 📚 Konspekt | React useEffect Lifecycle va Cleanup Funksiyalari | [extra-${timestamp}-${base.filename}](konspektlar/extra-${timestamp}-${base.filename}) |
 | 2026-11-19 | 05:40 | 💻 Amaliy Kod | Deep Clone Utility with Circular Reference Handling | [extra-${timestamp}-${base.filename}](amaliyot/extra-${timestamp}-${base.filename}) |
 | 2026-11-20 | 05:49 | 💻 Amaliy Kod | useLocalStorage React Custom Hook with Cross-Tab Sync | [extra-${timestamp}-${base.filename}](amaliyot/extra-${timestamp}-${base.filename}) |
+| 2026-11-21 | 05:06 | 💻 Amaliy Kod | useLocalStorage React Custom Hook with Cross-Tab Sync | [extra-${timestamp}-${base.filename}](amaliyot/extra-${timestamp}-${base.filename}) |
