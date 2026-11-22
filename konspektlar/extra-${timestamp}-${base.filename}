@@ -1,46 +1,12 @@
-# ⚛️ React `useEffect` Hook va Cleanup mexanizmi
+# 🎨 CSS Flexbox vs CSS Grid
 
-React funksional komponentlarida yon ta'sirlarni (side-effects: API chaqiruvlari, obuna bo'lish, DOM manipulyatsiyasi) boshqarish uchun `useEffect` ishlatiladi.
-
----
-
-## 📌 Bog'liqliklar massivi (Dependency Array) qoidalari:
-
-1. **Massiv berilmasa**:
-   ```tsx
-   useEffect(() => {
-     // Har bir render bo'lganda ishlaydi
-   });
-   ```
-
-2. **Bo'sh massiv (`[]`)**:
-   ```tsx
-   useEffect(() => {
-     // Faqat komponent ilk bor ekranga chizilganda (Mount) 1 marta ishlaydi
-   }, []);
-   ```
-
-3. **Qiymatlar berilgan massiv (`[userId, count]`)**:
-   ```tsx
-   useEffect(() => {
-     // userId yoki count o'zgarganda ishlaydi
-   }, [userId, count]);
-   ```
+Zamonaviy veb-dizaynda qachon Flexbox va qachon Grid ishlatish kerakligi eng ko'p so'raladigan savollardan biridir.
 
 ---
 
-## 🧹 Cleanup (Tozalash) funksiyasi nega kerak?
+## 📌 Asosiy farq:
 
-Komponent DOM'dan o'chirilganda (Unmount) yoki useEffect qayta ishga tushishidan oldin xotira oqishini (memory leak) oldini olish uchun cleanup qaytariladi:
-
-```tsx
-useEffect(() => {
-  const handleResize = () => console.log(window.innerWidth);
-  window.addEventListener('resize', handleResize);
-
-  // Cleanup:
-  return () => {
-    window.removeEventListener('resize', handleResize);
-  };
-}, []);
-```
+* **Flexbox (1D - Bir o'lchovli)**: Elementlarni faqat bitta yo'nalishda — yoki qator (row) yoki ustun (column) bo'yicha joylashtiradi.
+  * *Eng yaxshi holatlar*: Navbar menyulari, tugmalar guruhi, card ichidagi elementlar.
+* **Grid (2D - Ikki o'lchovli)**: Elementlarni bir vaqtning o'zida ham qator, ham ustun bo'yicha kataklarga ajratib joylashtiradi.
+  * *Eng yaxshi holatlar*: Butun sahifa tartibi (Dashboard layout), galereyalar, murakkab kartalar to'plami.
