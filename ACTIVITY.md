@@ -44,3 +44,4 @@ Agar foydalanuvchi o'sha kuni biror repo'ga kod push **qilmagan bo'lsa**, profil
 | 2026-11-22 | 04:31 | 💻 Amaliy Kod | Custom Event Emitter / Pub-Sub Implementation | [extra-${timestamp}-${base.filename}](amaliyot/extra-${timestamp}-${base.filename}) |
 | 2026-11-23 | 04:44 | 📚 Konspekt | CSS Grid va Flexbox: 1D va 2D tartiblash farqlari | [extra-${timestamp}-${base.filename}](konspektlar/extra-${timestamp}-${base.filename}) |
 | 2026-11-24 | 09:01 | 💻 Amaliy Kod | Custom Event Emitter / Pub-Sub Implementation | [extra-${timestamp}-${base.filename}](amaliyot/extra-${timestamp}-${base.filename}) |
+| 2026-11-25 | 07:43 | 📚 Konspekt | React useEffect Lifecycle va Cleanup Funksiyalari | [extra-${timestamp}-${base.filename}](konspektlar/extra-${timestamp}-${base.filename}) |
