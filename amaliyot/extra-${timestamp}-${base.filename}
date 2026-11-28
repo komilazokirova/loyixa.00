@@ -1,30 +1,41 @@
 /**
- * Type-Safe Event Emitter (Publish-Subscribe Pattern)
- * Komponentlar yoki modullar o'rtasida global bog'liqliksiz xabar almashish
+ * Fetch with Retry & Exponential Backoff
+ * Tarmoq uzilishlari yoki server vaqtincha javob bermagan holatlarda avtomatik qayta so'rov yuborish
  */
 
-type Listener<T> = (data: T) => void;
+interface RetryOptions {
+  retries?: number;
+  delayMs?: number;
+  backoffFactor?: number;
+}
 
-export class EventEmitter<Events extends Record<string, any>> {
-  private events: { [K in keyof Events]?: Listener<Events[K]>[] } = {};
+export async function fetchWithRetry(
+  url: string,
+  options: RequestInit = {},
+  retryOptions: RetryOptions = {}
+): Promise<Response> {
+  const { retries = 3, delayMs = 1000, backoffFactor = 2 } = retryOptions;
 
-  on<K extends keyof Events>(event: K, listener: Listener<Events[K]>): () => void {
-    if (!this.events[event]) {
-      this.events[event] = [];
+  let attempt = 0;
+  let currentDelay = delayMs;
+
+  while (attempt < retries) {
+    try {
+      const response = await fetch(url, options);
+      if (response.ok || response.status < 500) {
+        return response; // 2xx, 3xx yoki 4xx da qayta urinmaydi
+      }
+      throw new Error(`Server xatosi: ${response.status}`);
+    } catch (err) {
+      attempt++;
+      if (attempt >= retries) {
+        throw err;
+      }
+      console.warn(`So'rov muvaffaqiyatsiz bo'ldi. ${currentDelay}ms dan so'ng qayta uriniladi (urinish: ${attempt}/${retries})`);
+      await new Promise(resolve => setTimeout(resolve, currentDelay));
+      currentDelay *= backoffFactor;
     }
-    this.events[event]!.push(listener);
-
-    // Unsubscribe funksiyasini qaytarish
-    return () => this.off(event, listener);
   }
 
-  off<K extends keyof Events>(event: K, listener: Listener<Events[K]>): void {
-    if (!this.events[event]) return;
-    this.events[event] = this.events[event]!.filter(l => l !== listener);
-  }
-
-  emit<K extends keyof Events>(event: K, data: Events[K]): void {
-    if (!this.events[event]) return;
-    this.events[event]!.forEach(listener => listener(data));
-  }
+  throw new Error('Maksimal urinishlar soni tugadi');
 }
